@@ -47,11 +47,16 @@
 
     <body>
         <!-- Create a div where the graph will take place -->
-        <div id="my_chart" style="height: 100%;width: 100%;border: solid black 1px"></div>
+        <div id="my_chart1" style="height: 50%;width: 100%;border: solid black 1px"></div>
+        <div id="my_chart2" style="height: 50%;width: 100%;border: solid black 1px"></div>
     </body>
 
     <script>
-        drawChart("my_chart", json_data);
+        const myChart1 = new D3X("my_chart1", json_data)
+                            .drawChart();
+        const myChart2 = new D3X("my_chart2", json_data)
+                            .drawChart();
+        // myChart.drawChart();
     </script>
     
 </html>
