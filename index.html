@@ -1,0 +1,57 @@
+<meta charset="utf-8">
+<html>
+    <style>
+        .line {
+        fill: none;
+        stroke: steelblue;
+        stroke-width: 2px;
+        }
+
+        .grid line {
+        stroke: lightgrey;
+        stroke-opacity: 0.7;
+        shape-rendering: crispEdges;
+        z-index: 0;
+        }
+
+        .grid path {
+        stroke-width: 0;
+        }
+
+        .axis path {
+            stroke-width: 2;
+            stroke: rgb(68, 68, 68);
+        }
+
+        .axis .tick line{
+            stroke-width: 2;
+            stroke: rgb(68, 68, 68);
+        }
+
+        .axis .tick text{
+            font-family: "Proxima Nova";
+            fill: rgb(68, 68, 68);
+        }
+
+        .axis_label{
+            font-family: "Proxima Nova";
+            font-size: 0.8rem;
+        }
+        
+    </style>
+    <!-- SCRIPTS -->
+    
+    <script src="https://d3js.org/d3.v4.js"></script>
+    <script src="Chart.js"></script>
+    <script src="JSON_Sample.js"></script>
+
+    <body>
+        <!-- Create a div where the graph will take place -->
+        <div id="my_chart" style="height: 100%;width: 100%;border: solid black 1px"></div>
+    </body>
+
+    <script>
+        drawChart("my_chart", json_data);
+    </script>
+    
+</html>
