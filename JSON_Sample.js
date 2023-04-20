@@ -1,7 +1,7 @@
 var json_data =
 {
-    "title":                "Chart 1",
-    "sub-title":            "SubTitle",
+    "title":                "Network Level VoNR Accessibility",
+    "subTitle":             "HOU, CLE, JUS",
     "legend":               false,
     "x":
     {
@@ -9,6 +9,9 @@ var json_data =
         "label":            "Time",
         "unit":             "s",
         "values":           
+            // [0,1,2,3,4,5,6,7,8,9,
+            // 10,11,12,13,14,15,16,
+            // 17,18,19]  
             [0,1,2,3,4,5,6,7,8,9,
             10,11,12,13,14,15,16,
             17,18,19]  
@@ -21,7 +24,10 @@ var json_data =
             "label":        "KPI_1",
             "unit":         "%",      
             "chart_type":   "line",
-            "color":        "green",
+            "color":        "red",
+            "dots":         true,
+            "dots-radius":  "3",
+            "stroke-width": "2",
             "secondary_axis":false,
             "values":       
                 [10,3,4,2,1,8,3,3,9,
@@ -30,10 +36,12 @@ var json_data =
         {
             "id":           "y_1",
             "label":        "Mahdi",
-            "unit":         "%",      
+            "unit":         "Mbps",      
             "chart_type":   "line",
-            "color":        "red",
-            "secondary_axis":true,
+            "color":        "gray",
+            "dots":         false,
+            "stroke-width": "3",
+            "secondary_axis":false,
             "values":       
                 [2,4,5,3,2,1,2,44,20,
                 2,4,5,3,2,1,2,44,20,19,15]
@@ -43,7 +51,9 @@ var json_data =
             "label":        "Arash",
             "unit":         "%",      
             "chart_type":   "line",
-            "color":        "black",
+            "color":        "blue",
+            "dots":         false,
+            "stroke-width": "1",
             "secondary_axis":true,
             "values":       
                 [0,2,3,1,0,7,2,2,8,
