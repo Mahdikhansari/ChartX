@@ -1,7 +1,7 @@
 <meta charset="utf-8">
 <html>
     <style>
-        :root{
+        /* :root{
             --chartX_font: "Proxima Nova";
         }
         .line {
@@ -82,17 +82,23 @@
             height: 3px;
         }
 
-        .chartX_tooltip{
-            opacity: 0;
+        .chartX_tooltip_container{
+            display: none;
             position: absolute;
-            background-color: gray;
+            text-align: center;
+            width: 150px;
+        }
+        .chartX_tooltip_content{
+            background-color: rgba(65, 65, 65, 0.774);
             border: none;
             border-radius: 3px;
             padding: 3px;
             color: white;
             font-family: var(--chartX_font);
             font-size: 0.7rem;
-        }
+            width: fit-content;
+            display: inline-block;
+        } */
     </style>
     <!-- SCRIPTS -->
     
@@ -109,7 +115,7 @@
 <script>
     var myChart1 = new chartX("my_chart1", json_data)
     myChart1.drawChart();
-    const myChart2 = new chartX("my_chart2", json_data)
-    myChart2.drawChart();
+    // const myChart2 = new chartX("my_chart2", json_data)
+    // myChart2.drawChart();
     // myChart.drawChart();
 </script>

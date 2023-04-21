@@ -1,26 +1,33 @@
-// ---------------------------------------------------------------------------- //
+// ============================================================================================================== //
 //       ChartX
 //       Mahdi Khansari
-//       Enhanced version of D3 line chart
-//       Apr 20, 2023
-//
-// ---------------------------------------------------------------------------- //
-class chartX {
+//       Enhanced D3 line chart
+//       Apr 21, 2023
+//       v1.0
+// ============================================================================================================== //
+    class chartX {
     constructor(_container, _data){
         this.countainer = _container;
         this.data = _data;
         this.legend = [];
+
+        // resize handler
+        var ro = new ResizeObserver(enteries => {
+            this.drawChart();
+        })
+        ro.observe(document.getElementById(this.countainer))
     }
     
 
-    // ---------------------------------------------------------------------------- //
-    //                             Constants & Variables                            //
-    // ---------------------------------------------------------------------------- //
+    // ============================================================================================================== //
+    //                                                Constants & Variables                                           //
+    // ============================================================================================================== //
     chartMargin = {top: 10, right: 45, bottom: 40, left: 45};
     CHART_Y_AXIS_MARGIN_PERC_TOP = 0.1;
     CHART_Y_AXIS_MARGIN_PERC_BOTTOM = 0.1;
     CHART_X_AXIS_MARGIN_PERC_LEFT = 0;
     CHART_X_AXIS_MARGIN_PERC_RIGHT = 0;
+    
     SERIES_DEFAULT_COLOR = 'black';
     SERIES_DEFAULT_STROKE_WIDTH = 1;
     SERIES_DEFAULT_DOTS_RADIUS = 3;
@@ -32,17 +39,12 @@ class chartX {
     CHART_AXIS_LABEL_MARGIN_Y_PRI = 4;
     CHART_AXIS_LABEL_MARGIN_Y_SEC = 20;
 
-    // ---------------------------------------------------------------------------- //
-    //                              Getters & Setters                               //
-    // ---------------------------------------------------------------------------- //
-
-
-    // ---------------------------------------------------------------------------- //
-    //                                   Functions                                  //
-    // ---------------------------------------------------------------------------- //
+    // ============================================================================================================== //
+    //                                                    Functions                                                   //
+    // ============================================================================================================== //
     
     // JSON 2 Datum
-    //________________________________________________________________________________
+    //————————————————————————————————————————————————————————————————————————————————————————————————————————————————
     chartJson2Datum(_ChartJson){
 
         // JSON Array -> Datum
@@ -77,25 +79,31 @@ class chartX {
     }
 
     // Draw Chart
-    //________________________________________________________________________________
+    //————————————————————————————————————————————————————————————————————————————————————————————————————————————————
     drawChart(){
 
         var _id = this.countainer;
         var _ChartJson = this.data;
+        this.legend = [];
 
-        // Style 
-        //________________
+        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
+        //                                   Style                                   //
+        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
         // To add style to the HTML file
-        // var style = document.createElement('style');     // >>>>>>>> Uncomment before publishing
-        // style.innerHTML = this.STYLE_DEFAULT;
-        // document.head.appendChild(style);
+        var style = document.createElement('style'); 
+        style.innerHTML = this.STYLE_DEFAULT;
+        document.head.appendChild(style);
 
-        // Divs
-        //________________
+
+        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
+        //                                   Divs                                    //
+        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
         var divMain = d3.select("#".concat(_id))    // divMain
+            .html('')                               // resets the content, requried while resizing
             .append("div")
-            .style("width","100%")
-            .style("height", "100%");
+            .style("height", "100%")
+            .style("width", "100%")  
+
 
         var divHeader = divMain.append("div")       // divHeader [Title, Subtitle]
             .style("width", "100%")
@@ -112,7 +120,9 @@ class chartX {
             .style("text-align", "center");
 
 
-
+        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
+        //                                    Data                                   //
+        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
         // Chart -> Datum
         var chartDatum = this.chartJson2Datum(_ChartJson);
 
@@ -120,8 +130,10 @@ class chartX {
         var width = document.getElementById(_id).offsetWidth - this.chartMargin.left - this.chartMargin.right;
         var height = document.getElementById(_id).offsetHeight - this.chartMargin.top - this.chartMargin.bottom - 60;
 
-        //________________
-        // SVG 
+
+        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
+        //                                    SVG                                    //
+        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
         var svg = divChart
             .append("svg")
             .attr("width", width + this.chartMargin.left + this.chartMargin.right)
@@ -130,16 +142,17 @@ class chartX {
             .attr("transform", "translate(" + this.chartMargin.left + "," + this.chartMargin.top + ")");
 
 
-        //________________
-        // Title
-        divHeader.append("div")
+        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
+        //                                   Title                                   //
+        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
+        divHeader.append("div")                                 // Title
             .style("text-align","center")
             .style("width", "100%")
             .append("a")
             .text(_ChartJson["title"])
             .attr("class", "chartX_title")
 
-        divHeader.append("div")
+        divHeader.append("div")                                 // Sub-title
             .style("text-align","center")
             .style("width", "100%")
             .append("a")
@@ -147,15 +160,18 @@ class chartX {
             .attr("class", "chartX_subTitle")
         
 
-        //______________\\ 
-        //    __  __  
-        //    \ \/ /  
-        //     >  <   
-        //    /_/\_\  
-        //______________\\   
 
-        // X Axis
-        //_______________
+        //———————————————————————————————————————————————————————————————————————————//
+        //                                    __  __                                 //
+        //                                    \ \/ /                                 //  
+        //                                     >  <                                  //  
+        //                                    /_/\_\                                 // 
+        //———————————————————————————————————————————————————————————————————————————//
+   
+
+        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
+        //                                    Axis                                   //
+        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
         var xMin = d3.min(_ChartJson['x']['values']);
         var xMax = d3.max(_ChartJson['x']['values']);
         var xAxisMin = xMin - (this.CHART_X_AXIS_MARGIN_PERC_LEFT * (xMax - xMin));
@@ -165,15 +181,19 @@ class chartX {
             .domain([xAxisMin, xAxisMax])
             .range([ 0, width ]);
         
-        // Lines
-        //_______________
+
+        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
+        //                                  Lines                                    //
+        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
         svg.append("g")
             .attr("class", "axis")
             .attr("transform", "translate(0," + height + ")")
             .call(d3.axisBottom(x));
 
-        // X Grid
-        //_______________
+
+        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
+        //                                   Grid                                    //
+        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
         svg.append("g")			
             .attr("class", "grid")
             .attr("transform", "translate(0," + height + ")")
@@ -183,7 +203,10 @@ class chartX {
                 .tickFormat("")   // !!!!!!!!!!!!!!!!!! START HERE : the grid is overlapping the Axis, fix it.
             )
 
-        // X Axis Label
+
+        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
+        //                                Axis Label                                 //
+        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
         svg.append("text")
             .attr("class", "axis_label")
             .attr("text-anchor", "middle")
@@ -191,22 +214,26 @@ class chartX {
             .attr("y", height + this.CHART_AXIS_LABEL_MARGIN_X)
             .text(_ChartJson['x']['label'].concat('[',_ChartJson['x']['unit'],']'));
 
-        //______________\\ 
-        //    __   __  
-        //    \ \ / /  
-        //     \ V /  
-        //      |_|  
-        //______________\\  
+        //———————————————————————————————————————————————————————————————————————————//
+        //                                   __   __                                 //
+        //                                   \ \ / /                                 //
+        //                                    \ V /                                  //
+        //                                     |_|                                   //
+        //———————————————————————————————————————————————————————————————————————————//
 
-        // Y axis 
-        //_______________
+
+        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
+        //                                    Axis                                   //
+        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
         // there are primary and secondary axises, if all y series are using
         // only primary there wont be a secondary axis. it's also correct if
         // all y series are using only seconday axises.
         
-        // Primary
-        // domain  (with margin)
-        //_______________
+        
+        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
+        //                                  Primary                                  //
+        //                                  Domain                                   //
+        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
         var yAll = [];
         var yAxis_primary = null;
 
@@ -253,8 +280,10 @@ class chartX {
         }
 
 
-        // Secondary
-        //_______________
+        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
+        //                                 Secondary                                 //
+        //                                  Domain                                   //
+        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
         var yAll = [];
         var yAxis_secondary = null;
 
@@ -300,8 +329,10 @@ class chartX {
                 }
         }
 
-        // Y Grid
-        //_______________
+
+        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
+        //                                  Lines                                    //
+        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
         svg.append("g")			
             .attr("class", "grid")
             .style("z-index", "0")
@@ -311,16 +342,21 @@ class chartX {
                 .tickFormat("")
             )
 
-            
-        // Tooltip          // <<<<<<<<<<<<<<<<<<<<<<<<<< Start Here, Ada nother div inside of this one to center it
-        //_______________
-        var Tooltip = divChart
-            .append("div")
-            .attr("class", "chartX_tooltip")
-        
 
-        // Y Series
-        //_______________
+        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
+        //                                Tooltip                                    //
+        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
+        var Tooltip_container = divChart
+            .append("div")
+            .attr("class", "chartX_tooltip_container")
+        var Tooltip_content = Tooltip_container
+            .append("div")
+            .attr("class", "chartX_tooltip_content")
+
+        
+        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
+        //                               Y Series                                    //
+        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
         for (var seriesIndex = 0; seriesIndex<chartDatum.ySeriesCount ; seriesIndex++){
             
             // Type
@@ -351,12 +387,13 @@ class chartX {
 
             // Dots Mouse Event [Over]
             var dots_mouseOver = function(d){
-                Tooltip
+                Tooltip_container
+                    .style("display", "block")
+                    .style("top", (Number(this.getAttribute('cy'))-16) + "px")          // to put tooltip on top of the marker
+                    .style("left", (Number(this.getAttribute('cx'))-29.5) + "px")       // to put tooltip on top of the marker
+                Tooltip_content
                     .html(Number(this.getAttribute('value')))
-                    .style("top", (Number(this.getAttribute('cy'))-15) + "px")      // to put tooltip on top of the marker
-                    .style("left", (Number(this.getAttribute('cx'))+30) + "px")     // to put tooltip on top of the marker
-                    .style("opacity", 1)
-                    console.log(this)
+                    
 
                 d3.select(this)
                     .style("outline","1px dotted black")
@@ -364,16 +401,19 @@ class chartX {
             }
             // Dots Mouse Event [Leave]
             var dots_mouseLeave = function(d){
-                Tooltip
-                    .style("opacity", 0)
+                Tooltip_container
+                .style("display", "none")
 
                 d3.select(this)
                     .style("stroke","none")
                     .style("outline","none")
             }
             
-            // Line
-            //_______________
+
+        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
+        //                               Y Series                                    //
+        //                                Lines                                      //
+        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
             svg.append("path")
             .datum(chartDatum.datum)
             .attr("fill", "none")
@@ -393,8 +433,11 @@ class chartX {
                 .curve(d3.curveCardinal.tension(0.7))
                 )
 
-            // Dot
-            //_______________
+
+        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
+        //                               Y Series                                    //
+        //                                 Dots                                      //
+        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
             var yValue = 0;
             svg.append("g")                                                     
                 .selectAll("dot")
@@ -429,9 +472,10 @@ class chartX {
                     .on("mouseleave", dots_mouseLeave)
         }
 
-        // Legend
-        //________________
 
+        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
+        //                                 Legend                                    //
+        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
         _ChartJson["y"].forEach(tmpY=>{                         // get keys
             this.legend.push({"label" : tmpY['label'], "color": tmpY["color"]});
         })
@@ -462,9 +506,9 @@ class chartX {
             })
             .attr("class","chartX_legend_title")
     }
-    // ---------------------------------------------------------------------------- //
-    //                                    Style                                     //
-    // ---------------------------------------------------------------------------- //
+    // ============================================================================================================== //
+    //                                                      Style                                                     //
+    // ============================================================================================================== //
     STYLE_DEFAULT =`
     :root{
         --chartX_font: "Proxima Nova";
@@ -545,6 +589,24 @@ class chartX {
         display: inline-block;
         width: 30px;
         height: 3px;
+    }
+
+    .chartX_tooltip_container{
+        display: none;
+        position: absolute;
+        text-align: center;
+        width: 150px;
+    }
+    .chartX_tooltip_content{
+        background-color: rgba(65, 65, 65, 0.774);
+        border: none;
+        border-radius: 3px;
+        padding: 3px;
+        color: white;
+        font-family: var(--chartX_font);
+        font-size: 0.7rem;
+        width: fit-content;
+        display: inline-block;
     }
     `
 }

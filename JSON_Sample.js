@@ -54,10 +54,23 @@ var json_data =
             "color":        "blue",
             "dots":         false,
             "stroke-width": "1",
-            "secondary_axis":true,
+            "secondary_axis":false,
             "values":       
                 [0,2,3,1,0,7,2,2,8,
                 0,2,3,1,0,7,2,2,8,4,2]
+        },
+        {
+            "id":           "y_1",
+            "label":        "New_KPI",
+            "unit":         "Kg",      
+            "chart_type":   "line",
+            "color":        "Green",
+            "dots":         false,
+            "stroke-width": "2",
+            "secondary_axis":true,
+            "values":       
+                [10,12,13,21,10,27,32,22,18,
+                20,2,33,21,10,7,21,2,18,24,12]
         }
     ]
 }
