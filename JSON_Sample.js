@@ -40,7 +40,7 @@ var json_data =
             "chart_type":   "line",
             "color":        "gray",
             "dots":         false,
-            "stroke-width": "3",
+            "stroke-width": "2",
             "secondary_axis":false,
             "values":       
                 [2,4,5,3,2,1,2,44,20,
@@ -52,8 +52,8 @@ var json_data =
             "unit":         "%",      
             "chart_type":   "line",
             "color":        "blue",
-            "dots":         false,
-            "stroke-width": "1",
+            "dots":         true,
+            "stroke-width": "3",
             "secondary_axis":false,
             "values":       
                 [0,2,3,1,0,7,2,2,8,
