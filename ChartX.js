@@ -3,7 +3,7 @@
 //       Mahdi Khansari
 //       Enhanced D3 line chart
 //       Apr 25, 2023
-//       v1.2.0
+//       v1.2.0 
 // ============================================================================================================== //
 class chartX {
     constructor(_container, _data){
