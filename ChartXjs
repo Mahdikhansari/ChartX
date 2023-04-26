@@ -2,10 +2,10 @@
 //       ChartX
 //       Mahdi Khansari
 //       Enhanced D3 line chart
-//       Apr 21, 2023
-//       v1.0
+//       Apr 25, 2023
+//       v1.2.0
 // ============================================================================================================== //
-    class chartX {
+class chartX {
     constructor(_container, _data){
         this.countainer = _container;
         this.data = _data;
@@ -176,10 +176,19 @@
         var xMax = d3.max(_ChartJson['x']['values']);
         var xAxisMin = xMin - (this.CHART_X_AXIS_MARGIN_PERC_LEFT * (xMax - xMin));
         var xAxisMax = xMax + (this.CHART_X_AXIS_MARGIN_PERC_RIGHT * (xMax - xMin));
-        var x = d3.scaleLinear()
-            // x domain with margin
+        
+        // X datatype
+        var x;
+        if(_ChartJson['x']['data_type'] == 'dateTime'){
+            x = d3.scaleTime()                              // Time
+            .domain(d3.extent(_ChartJson['x']['values']))
+            .range([ 0, width ]);
+        }
+        else{
+            var x = d3.scaleLinear()                        // Number
             .domain([xAxisMin, xAxisMax])
             .range([ 0, width ]);
+        }
         
 
         //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
@@ -384,8 +393,47 @@
             if (_ChartJson['y'][seriesIndex]['dots-radius'] != undefined) { 
                 dotsRadius = _ChartJson['y'][seriesIndex]['dots-radius'];}
 
+        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
+        //                                Mouse Events                               //
+        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
 
-            // Dots Mouse Event [Over]
+            // Line
+            // -------------------------------
+            // Mouse Event [Over]
+            var lines_mouseOver = function(d){
+                d3.selectAll("path")                // Makes all line gray
+                    .attr("stroke-width", 1)
+                    .attr("stroke", "lightgray")
+
+                d3.selectAll("circle")
+                    .attr("visibility","hidden");   // Disapear all dots
+
+
+                d3.select(this)                     
+                    .attr("stroke-width", 4)        // increase the stroke width by 2 times
+                    .attr("stroke",                 // the hovered line will keep color
+                        d3.select(this).attr("stroke-copy"))  
+
+            }
+
+            // Mouse Event [Over]
+            var lines_mouseLeave = function(){                      
+                d3.selectAll("path")
+                    .each(function(){
+                        d3.select(this).attr("stroke",
+                            d3.select(this).attr("stroke-copy"))                    // sets the color to the set value  
+                        d3.select(this).attr("stroke-width",
+                            d3.select(this).attr("stroke-width-copy"))              // sets the stroke width to the set value  
+                    })
+                
+                d3.selectAll("circle")
+                    .attr("visibility","visible");                                  // make all dots appear again
+                
+            }
+
+            // Dots
+            // -------------------------------
+            // Mouse Event [Over]
             var dots_mouseOver = function(d){
                 Tooltip_container
                     .style("display", "block")
@@ -394,12 +442,12 @@
                 Tooltip_content
                     .html(Number(this.getAttribute('value')))
                     
-
                 d3.select(this)
                     .style("outline","1px dotted black")
                     .style("outline-offset","3px")
             }
-            // Dots Mouse Event [Leave]
+
+            // Mouse Event [Leave]
             var dots_mouseLeave = function(d){
                 Tooltip_container
                 .style("display", "none")
@@ -417,8 +465,12 @@
             svg.append("path")
             .datum(chartDatum.datum)
             .attr("fill", "none")
-            .attr("stroke", seriesColor) // Color
-            .attr("stroke-width", strokeWidth)
+            .attr("stroke", seriesColor)                    // Color
+            .attr("stroke-copy", seriesColor)               // Color-copy
+            .attr("stroke-width", strokeWidth)              // Width
+            .attr("stroke-width-copy", strokeWidth)         // Width-copy
+            .on("mouseover", lines_mouseOver)
+            .on("mouseleave", lines_mouseLeave)
             .attr("d", d3.line()
                 .x(function(d) { return x(d['x']) })
                 .y(function(d) { 
@@ -431,6 +483,7 @@
                         return yp(d['y'.concat(seriesIndex + 1)]);
                     }})
                 .curve(d3.curveCardinal.tension(0.7))
+                
                 )
 
 
@@ -608,5 +661,76 @@
         width: fit-content;
         display: inline-block;
     }
-    `
+    `;
+
+    CHART_DATA_JSON_ROOT = {
+        "title":                "Chart Title",
+        "subTitle":             "Chart Subtitle",
+        "legend":               false,
+        "x":{
+            "data_type":        "dateTime",
+            "label":            "Time",
+            "unit":             "m",
+            "values": []
+        },
+        "y" : []
+    }
+
+    CHART_DATA_JSON_Y = {
+        "id":           "ySeries",
+        "label":        "KPI_1",
+        "unit":         "%",      
+        "chart_type":   "line",
+        "color":        "red",
+        "dots":         true,
+        "dots-radius":  "3",
+        "stroke-width": "2",
+        "secondary_axis":false,
+        "values": []
+    }
+
+    // JSON Array to Chart JSON
+    //————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+    JSONArray2ChartJSON(_JsonArray, _x_col, _y_cols) {
+
+        // variables
+        // -------------------------------------------
+        var x = [];
+        var ys = [];
+        var yInd = 0;
+        var tmpdata = this.CHART_DATA_JSON_ROOT;
+
+        // add Y base formats
+        // -------------------------------------------
+        _y_cols.forEach(yCol => {
+            // Add a y series with the base format
+            tmpdata["y"].push(this.CHART_DATA_JSON_Y);
+            
+            // Next Y
+            yInd++;
+        })
+
+        // row iteration 
+        // -------------------------------------------
+        _JsonArray.forEach(row=>{
+
+            // X
+            var zuluParser = d3.timeParse("%Y-%m-%dT%H:%M:%S.000Z");    // Zulu Parse
+            tmpdata["x"]["values"].push(zuluParser(row[_x_col]));
+
+            // Y
+            yInd = 0;
+            _y_cols.forEach(yCol => {
+                
+                // add y series values
+                tmpdata["y"][yInd]["values"].push(row[yCol]);
+
+                // next y
+                yInd++;
+            })
+        })
+        
+        // update the class data
+        this.data =  tmpdata;
+    }
 }
