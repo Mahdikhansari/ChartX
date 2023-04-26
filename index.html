@@ -1,0 +1,122 @@
+<meta charset="utf-8">
+<html>
+    <style>
+        /* :root{
+            --chartX_font: "Proxima Nova";
+        }
+        .line {
+        fill: none;
+        stroke: steelblue;
+        stroke-width: 2px;
+        }
+
+        .grid line {
+        stroke: lightgrey;
+        stroke-opacity: 0.7;
+        shape-rendering: crispEdges;
+        z-index: 0;
+        }
+
+        .grid path {
+        stroke-width: 0;
+        }
+
+        .axis path {
+            stroke-width: 2;
+            stroke: rgb(68, 68, 68);
+        }
+
+        .axis .tick line{
+            stroke-width: 2;
+            stroke: rgb(68, 68, 68);
+        }
+
+        .axis .tick text{
+            font-family: var(--chartX_font);
+            fill: rgb(68, 68, 68);
+        }
+
+        .axis_label{
+            font-family: var(--chartX_font);
+            font-size: 0.8rem;
+        }
+
+        .chartX_title{
+            font-size: 1em;
+            font-weight: 500;
+            font-family: var(--chartX_font);
+        }
+        .chartX_subTitle{
+            font-size: 0.8em;
+            font-weight: 300;
+            font-family: var(--chartX_font);
+        }
+
+
+        .chartX_legend_container_main{
+            display: inline-block;
+            border: 1px solid #bfbfbf;
+            padding: 2px 10px;
+        }
+
+        .chartX_legend_container_y{
+            display: inline-block;
+            text-align: left;
+        }
+
+        .chartX_legend_container_y:last-child > .chartX_legend_title{
+            margin-right: 0px !important;
+        }
+
+        .chartX_legend_title{
+            font-size: 0.8em;
+            font-weight: 300;
+            font-family: var(--chartX_font);
+            margin-left: 5px;
+            margin-right: 30px;
+        }
+
+        .chartX_legend_svg{
+            display: inline-block;
+            width: 30px;
+            height: 3px;
+        }
+
+        .chartX_tooltip_container{
+            display: none;
+            position: absolute;
+            text-align: center;
+            width: 150px;
+        }
+        .chartX_tooltip_content{
+            background-color: rgba(65, 65, 65, 0.774);
+            border: none;
+            border-radius: 3px;
+            padding: 3px;
+            color: white;
+            font-family: var(--chartX_font);
+            font-size: 0.7rem;
+            width: fit-content;
+            display: inline-block;
+        } */
+    </style>
+    <!-- SCRIPTS -->
+    
+    <script src="https://d3js.org/d3.v4.js"></script>
+    <script src="ChartX.1.2.0.js"></script>
+    <script src="JSON_Sample.js"></script>
+
+    <body>
+        <!-- Create a div where the graph will take place -->
+        <div id="my_chart1" style="height: 50%;width: 100%;border: solid black 1px"></div>
+        <div id="my_chart2" style="height: 50%;width: 100%;border: solid black 1px"></div>
+    </body>
+</html>
+<script>
+    var myChart1 = new chartX("my_chart1", json_data_3)
+
+    // format the data
+    myChart1.JSONArray2ChartJSON(json_data_3,'__time',['vonr_access']);
+
+    myChart1.drawChart();
+</script>
