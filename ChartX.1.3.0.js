@@ -2,8 +2,8 @@
 //       ChartX
 //       Mahdi Khansari
 //       Enhanced D3 line chart
-//       May 1, 2023
-//       v1.4.2
+//       Apr 26, 2023
+//       v1.3.0
 // ============================================================================================================== //
 class chartX {
     constructor(_container, _data){
@@ -12,8 +12,6 @@ class chartX {
         this.legend = [];
         this.xParserPattern = '';
 
-        this.chartJson2Datum = this.chartJson2Datum.bind(this);
-        this.isNotNum = this.isNotNum.bind(this);
 
         // resize handler
         var ro = new ResizeObserver(enteries => {
@@ -26,14 +24,11 @@ class chartX {
     // ============================================================================================================== //
     //                                                Constants & Variables                                           //
     // ============================================================================================================== //
-    chartMargin = {top: 10, right: 45, bottom: 40, left: 60};
+    chartMargin = {top: 10, right: 45, bottom: 40, left: 45};
     CHART_Y_AXIS_MARGIN_PERC_TOP = 0.1;
     CHART_Y_AXIS_MARGIN_PERC_BOTTOM = 0.1;
-    CHART_Y_AXIS_SINGLE_VALUE_PERC_BOTH = 0.05;
     CHART_X_AXIS_MARGIN_PERC_LEFT = 0;
     CHART_X_AXIS_MARGIN_PERC_RIGHT = 0;
-    
-
     
     SERIES_DEFAULT_COLOR = 'black';
     SERIES_DEFAULT_STROKE_WIDTH = 1;
@@ -45,22 +40,6 @@ class chartX {
     CHART_AXIS_LABEL_MARGIN_X = 30;
     CHART_AXIS_LABEL_MARGIN_Y_PRI = 4;
     CHART_AXIS_LABEL_MARGIN_Y_SEC = 20;
-
-    TOOLTIP_DOT_RADIUS = 7;
-
-    TIMEZONE_MAPPING = {
-        "PST"  : "PST",
-        "PDT"  : "PST8PDT",
-        "MST"  : "MST",
-        "MDT"  : "MST7MDT",
-        "CST"  : "CST",
-        "CDT"  : "CST6CDT",
-        "EST"  : "EST",
-        "EDT"  : "EST5EDT",
-        "UTC"  : "UTC",
-        "HST"  : "HST",
-        "AKST" : "AST",
-    };
 
     // ============================================================================================================== //
     //                                                     Setters                                                    //
@@ -108,12 +87,6 @@ class chartX {
     //————————————————————————————————————————————————————————————————————————————————————————————————————————————————  
     set_xValues(_xValues){
         this.data['x']['values'] = _xValues;
-    }
-
-    // X TimeZone
-    //————————————————————————————————————————————————————————————————————————————————————————————————————————————————  
-    set_xTimeZone(_xTimeZone){
-        this.data['x']['time-zone'] = _xTimeZone;
     }
 
     // Y Label
@@ -172,12 +145,9 @@ class chartX {
     //                                                    Functions                                                   //
     // ============================================================================================================== //
 
-
     // JSON 2 Datum
     //————————————————————————————————————————————————————————————————————————————————————————————————————————————————
     chartJson2Datum(_ChartJson){
-
-        var _this = this;
 
         // JSON Array -> Datum
         var resDatum = [];
@@ -199,7 +169,7 @@ class chartX {
 
             // for each y
             _ChartJson['y'].forEach(function(yk, yi){
-                if(_this.isNotNum(_ChartJson['y'][yi]['values'][xi])){       // Not Number values
+                if(isNaN(_ChartJson['y'][yi]['values'][xi])){       // Nulll values "NaN"
                     point['y'.concat(yi+1)] = "NaN";
                 }
                 else{
@@ -207,6 +177,7 @@ class chartX {
                 }
 
             })
+            
             // push to result
             resDatum.push(point);
             point = {};
@@ -220,18 +191,8 @@ class chartX {
     drawChart(){
 
         var _id = this.countainer;
-
-        // Chart width and height
-        var width = document.getElementById(_id).offsetWidth - this.chartMargin.left - this.chartMargin.right;
-        var height = document.getElementById(_id).offsetHeight - this.chartMargin.top - this.chartMargin.bottom - 60;
-
-        // Initial Check
-        // If the widht or height is less than zero it would exit the process
-        if(width < 0 || height < 0) return null;
-
         var _ChartJson = this.data;
         this.legend = [];
-        var _this = this;
 
         //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
         //                                   Style                                   //
@@ -241,6 +202,7 @@ class chartX {
         style.innerHTML = this.STYLE_DEFAULT;
         document.head.appendChild(style);
 
+
         //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
         //                                   Divs                                    //
         //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
@@ -249,6 +211,7 @@ class chartX {
             .append("div")
             .style("height", "100%")
             .style("width", "100%")  
+
 
         var divHeader = divMain.append("div")       // divHeader [Title, Subtitle]
             .style("width", "100%")
@@ -270,6 +233,10 @@ class chartX {
         //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
         // Chart -> Datum
         var chartDatum = this.chartJson2Datum(_ChartJson);
+
+        // Chart width and height
+        var width = document.getElementById(_id).offsetWidth - this.chartMargin.left - this.chartMargin.right;
+        var height = document.getElementById(_id).offsetHeight - this.chartMargin.top - this.chartMargin.bottom - 60;
 
 
         //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
@@ -308,16 +275,7 @@ class chartX {
         //                                     >  <                                  //  
         //                                    /_/\_\                                 // 
         //———————————————————————————————————————————————————————————————————————————//
-
-        
-        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
-        //                                  Time Zone                                //
-        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
-        var TZ = "UTC"
-        if(_ChartJson['x']['time-zone'] != null && _ChartJson['x']['time-zone'] != undefined){
-            TZ = _ChartJson['x']['time-zone'];
-        }
-           
+   
 
         //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
         //                                    Axis                                   //
@@ -331,7 +289,7 @@ class chartX {
         var x;
         if(_ChartJson['x']['data_type'] == 'dateTime'){
             x = d3.scaleTime()                              // Time
-            .domain(d3.extent(_ChartJson['x']['values'])) 
+            .domain(d3.extent(_ChartJson['x']['values']))
             .range([ 0, width ]);
         }
         else{
@@ -340,17 +298,14 @@ class chartX {
             .range([ 0, width ]);
         }
         
-        // Axis Lines
+
+        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
+        //                                  Lines                                    //
+        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
         svg.append("g")
             .attr("class", "axis")
             .attr("transform", "translate(0," + height + ")")
-            .call(d3.axisBottom(x)
-            .tickFormat(function(d){
-                    return d3.timeFormat('%H:%M')(new Date(d.toLocaleString('en-US', {
-                        timeZone: _this.TIMEZONE_MAPPING[TZ]
-                    })))}
-                )
-            );
+            .call(d3.axisBottom(x));
 
 
         //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
@@ -362,8 +317,8 @@ class chartX {
             .call(d3.axisBottom(x)
                 .ticks(this.CHART_GRID_X_NO)
                 .tickSize(-height)
-                .tickFormat("")
-            );               
+                .tickFormat("")   // !!!!!!!!!!!!!!!!!! START HERE : the grid is overlapping the Axis, fix it.
+            )
 
 
         //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
@@ -374,7 +329,7 @@ class chartX {
             .attr("text-anchor", "middle")
             .attr("x", width/2)
             .attr("y", height + this.CHART_AXIS_LABEL_MARGIN_X)
-            .text(_ChartJson['x']['label'].concat('[',_ChartJson['x']['time-zone'],']'));
+            .text(_ChartJson['x']['label'].concat('[',_ChartJson['x']['unit'],']'));
 
         //———————————————————————————————————————————————————————————————————————————//
         //                                   __   __                                 //
@@ -398,17 +353,11 @@ class chartX {
         //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
         var yAll = [];
         var yAxis_primary = null;
-        
 
         _ChartJson['y'].forEach(function(k){
-            if(!(k['secondary_axis'])){                 // Only Primary series
+            if(!(k['secondary_axis'])){     // Only Primary series
+                yAll = yAll.concat(k["values"]);
 
-                // filtering out not number values 
-                const yFiltered = k["values"].filter(function (value) {
-                    return !_this.isNotNum(value);
-                });
-                yAll = yAll.concat(yFiltered);
-                
                 // Create Y axis Label (Primary)
                 if(k['label'] != null){
                     if(yAxis_primary == null){
@@ -422,12 +371,6 @@ class chartX {
         })
         var yAxisMin = d3.min(yAll) - (this.CHART_Y_AXIS_MARGIN_PERC_BOTTOM  * (d3.max(yAll) - d3.min(yAll)));
         var yAxisMax = d3.max(yAll) + (this.CHART_Y_AXIS_MARGIN_PERC_TOP     * (d3.max(yAll) - d3.min(yAll)));
-
-        // Single value for all Y points
-        if(d3.min(yAll) == d3.max(yAll)) {
-            yAxisMin = d3.min(yAll) - (this.CHART_Y_AXIS_SINGLE_VALUE_PERC_BOTH) * (d3.min(yAll));
-            yAxisMax = d3.max(yAll) + (this.CHART_Y_AXIS_SINGLE_VALUE_PERC_BOTH) * (d3.max(yAll));
-        }
 
         var yp = d3.scaleLinear()
             .domain([yAxisMin, yAxisMax])
@@ -463,12 +406,7 @@ class chartX {
 
         _ChartJson['y'].forEach(function(k){
             if(k['secondary_axis']){        // Only secondary series
-
-                // filtering out not number values 
-                const yFiltered = k["values"].filter(function (value) {
-                    return !this.isNotNum(value);
-                });
-                yAll = yAll.concat(yFiltered);
+                yAll = yAll.concat(k["values"]);
 
                 // Create Y axis Label (Secondary)
                 if(k['label'] != null){
@@ -483,13 +421,6 @@ class chartX {
         })
         var yAxisMin = d3.min(yAll) - (this.CHART_Y_AXIS_MARGIN_PERC_BOTTOM  * (d3.max(yAll) - d3.min(yAll)));
         var yAxisMax = d3.max(yAll) + (this.CHART_Y_AXIS_MARGIN_PERC_TOP     * (d3.max(yAll) - d3.min(yAll)));
-
-        // Single value for all Y points
-        if(d3.min(yAll) == d3.max(yAll)) {
-            yAxisMin = d3.min(yAll) - (this.CHART_Y_AXIS_SINGLE_VALUE_PERC_BOTH) * (d3.min(yAll));
-            yAxisMax = d3.max(yAll) + (this.CHART_Y_AXIS_SINGLE_VALUE_PERC_BOTH) * (d3.max(yAll));
-        }
-
         var ys = d3.scaleLinear()
             .domain([yAxisMin, yAxisMax])
             .range([height, 0]);
@@ -522,8 +453,7 @@ class chartX {
         svg.append("g")			
             .attr("class", "grid")
             .style("z-index", "0")
-            .call(d3.axisLeft(yp)                   // Grid is available only when at 
-                                                    // least one primary series is available
+            .call(d3.axisLeft(yp)
                 .ticks(this.CHART_GRID_Y_NO)
                 .tickSize(-width)
                 .tickFormat("")
@@ -617,15 +547,10 @@ class chartX {
             var dots_mouseOver = function(d){
                 Tooltip_container
                     .style("display", "block")
-                    .style("top", (Number(this.getAttribute('cy'))-28) + "px")          // to put tooltip on top of the marker
+                    .style("top", (Number(this.getAttribute('cy'))-16) + "px")          // to put tooltip on top of the marker
                     .style("left", (Number(this.getAttribute('cx'))-29.5) + "px")       // to put tooltip on top of the marker
                 Tooltip_content
-                    .html(
-                        this.getAttribute('metric_name') + ": " + 
-                        "<b>" + Number(this.getAttribute('metric_value')) + "</b> " +
-                        this.getAttribute('metric_unit') + "<br>" +
-                        this.getAttribute('time_value')
-                        )
+                    .html(Number(this.getAttribute('value')))
                     
                 d3.select(this)
                     .style("outline","1px dotted black")
@@ -647,13 +572,14 @@ class chartX {
         //                               Y Series                                    //
         //                                Lines                                      //
         //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
+        
         // Filter the null values
         var Data_notNull = chartDatum.datum.filter(function(d){
-            return !_this.isNotNum(d['y'.concat(seriesIndex + 1)]);
+            return d['y'.concat(seriesIndex + 1)] != 'NaN';
         })
 
 
-        // y Lines (Where y is available)
+        // 
         var yLines = svg.append("path")
             .datum(chartDatum.datum)
             .attr("fill", "none")
@@ -664,6 +590,7 @@ class chartX {
             //.on("mouseover", lines_mouseOver)             // [Deactivated, due to conflict with dots mouse events]
             //.on("mouseleave", lines_mouseLeave)           // [Deactivated, due to conflict with dots mouse events]
             .attr("d", d3.line()
+                .defined(function(d) { return d['y'.concat(seriesIndex + 1)] != 'NaN'})     // Skips the NaN values 
                 .x(function(d) { return x(d['x']) })
                 .y(function(d) { 
                     // Secondary
@@ -674,7 +601,7 @@ class chartX {
                     else{
                         return yp(d['y'.concat(seriesIndex + 1)]);
                     }})
-                .defined(function(d) { return !_this.isNotNum(d['y'.concat(seriesIndex + 1)])})     // Skips the not number values                 
+                
                 //.curve(d3.curveCardinal.tension(0.7))    // [Removed, due to confusion with gap lines]            
                 )
 
@@ -703,66 +630,42 @@ class chartX {
         //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
         //                               Y Series                                    //
         //                                 Dots                                      //
-        //                                Display                                    //
         //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
-            var ySeriesDot_display = svg.append("g")                                                     
+            var yValue = 0;
+            svg.append("g")                                                     
                 .selectAll("dot")
                 .data(Data_notNull)         // Only Not null values
                 .enter()
                 .append("circle")
+                //.defined(function(d) { return d['y'.concat(seriesIndex + 1)] != 'NaN'}) // Skips the NaN values
                     .attr("cx", function(d) { return x(d['x']) })
                     .attr("cy", function(d) { 
                         // Secondary
                         if (_ChartJson['y'][seriesIndex]['secondary_axis']){
+                            yValue= d['y'.concat(seriesIndex + 1)];
                             return ys(d['y'.concat(seriesIndex + 1)]);
                         }
                         // Primary
                         else{
+                            yValue = d['y'.concat(seriesIndex + 1)];
                             return yp(d['y'.concat(seriesIndex + 1)]);
                         }})
+                    
+                    .attr("value",function(d) {                                 // Value
+                        // Secondary
+                        if (_ChartJson['y'][seriesIndex]['secondary_axis']){
+                            return d['y'.concat(seriesIndex + 1)];
+                        }
+                        // Primary
+                        else{
+                            return d['y'.concat(seriesIndex + 1)];
+                        }})
+                    
                     .attr("r",dotsRadius)
                     .style("fill",seriesColor)
-                    .style("opacity",dotsOpacity);
-
-        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
-        //                               Y Series                                    //
-        //                                 Dots                                      //
-        //                                Tootip                                     //
-        //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
-        var ySeriesDot_display = svg.append("g")                                                     
-            .selectAll("dot")
-            .data(Data_notNull)         // Only Not null values
-            .enter()
-            .append("circle")
-                .attr("cx", function(d) { return x(d['x']) })
-                .attr("cy", function(d) { 
-                    // Secondary
-                    if (_ChartJson['y'][seriesIndex]['secondary_axis']){
-                        return ys(d['y'.concat(seriesIndex + 1)]);
-                    }
-                    // Primary
-                    else{
-                        return yp(d['y'.concat(seriesIndex + 1)]);
-                    }})
-                
-                // Tooltip parameters
-                .attr("metric_value",function(d) {                          // Metric Value
-                        return d['y'.concat(seriesIndex + 1)];
-                    })
-                .attr("metric_name",function(d) {                           // Metric Name
-                        return _ChartJson['y'][seriesIndex]['label'];
-                    })
-                .attr("metric_unit",function(d) {                           // Metric Unit
-                        return _ChartJson['y'][seriesIndex]['unit'];
-                    })
-                .attr("time_value",function(d) {                            // Time value
-                        return (d3.timeFormat('%b/%d %H:%M')(d['x']) + " [" + _ChartJson['x']['time-zone'] + "]");
-                    })
-                .attr("r",this.TOOLTIP_DOT_RADIUS)
-                .style("opacity",0)
-                .on("mouseover", dots_mouseOver)            
-                .on("mouseleave", dots_mouseLeave);
-
+                    .style("opacity",dotsOpacity)
+                    .on("mouseover", dots_mouseOver)            
+                    .on("mouseleave", dots_mouseLeave)
         }
 
 
@@ -911,7 +814,6 @@ class chartX {
             "data_type":        "dateTime",
             "label":            "Time",
             "unit":             "m",
-            "time-zone":        "UTC",
             "values": []
         },
         "y" : []
@@ -929,7 +831,6 @@ class chartX {
         "secondary_axis":false,
         "values": []
     }
-
 
     // JSON Array to Chart JSON
     //————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -957,9 +858,8 @@ class chartX {
         _JsonArray.forEach(row=>{
 
             // X
-            //var zuluParser = d3.timeParse(_xParserPattern);    // Zulu Parse
-            //tmpdata["x"]["values"].push(zuluParser(row[_x_col]));
-            tmpdata["x"]["values"].push(new Date(row[_x_col]));
+            var zuluParser = d3.timeParse(_xParserPattern);    // Zulu Parse
+            tmpdata["x"]["values"].push(zuluParser(row[_x_col]));
 
             // Y
             yInd = 0;
@@ -976,15 +876,4 @@ class chartX {
         // update the class data
         this.data =  tmpdata;
     }
-
-    // Is Not Number
-    //————————————————————————————————————————————————————————————————————————————————————————————————————————————————
-    isNotNum(_val){
-        return (
-            isNaN(_val) ||              // NaN
-            _val == "Infinity"          // Infinity
-            );         
-    }
 }
-    
-

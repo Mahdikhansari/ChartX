@@ -2,8 +2,8 @@
 //       ChartX
 //       Mahdi Khansari
 //       Enhanced D3 line chart
-//       May 1, 2023
-//       v1.4.2
+//       Apr 28, 2023
+//       v1.4.0
 // ============================================================================================================== //
 class chartX {
     constructor(_container, _data){
@@ -26,14 +26,11 @@ class chartX {
     // ============================================================================================================== //
     //                                                Constants & Variables                                           //
     // ============================================================================================================== //
-    chartMargin = {top: 10, right: 45, bottom: 40, left: 60};
+    chartMargin = {top: 10, right: 45, bottom: 40, left: 45};
     CHART_Y_AXIS_MARGIN_PERC_TOP = 0.1;
     CHART_Y_AXIS_MARGIN_PERC_BOTTOM = 0.1;
-    CHART_Y_AXIS_SINGLE_VALUE_PERC_BOTH = 0.05;
     CHART_X_AXIS_MARGIN_PERC_LEFT = 0;
     CHART_X_AXIS_MARGIN_PERC_RIGHT = 0;
-    
-
     
     SERIES_DEFAULT_COLOR = 'black';
     SERIES_DEFAULT_STROKE_WIDTH = 1;
@@ -220,15 +217,6 @@ class chartX {
     drawChart(){
 
         var _id = this.countainer;
-
-        // Chart width and height
-        var width = document.getElementById(_id).offsetWidth - this.chartMargin.left - this.chartMargin.right;
-        var height = document.getElementById(_id).offsetHeight - this.chartMargin.top - this.chartMargin.bottom - 60;
-
-        // Initial Check
-        // If the widht or height is less than zero it would exit the process
-        if(width < 0 || height < 0) return null;
-
         var _ChartJson = this.data;
         this.legend = [];
         var _this = this;
@@ -270,6 +258,10 @@ class chartX {
         //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
         // Chart -> Datum
         var chartDatum = this.chartJson2Datum(_ChartJson);
+
+        // Chart width and height
+        var width = document.getElementById(_id).offsetWidth - this.chartMargin.left - this.chartMargin.right;
+        var height = document.getElementById(_id).offsetHeight - this.chartMargin.top - this.chartMargin.bottom - 60;
 
 
         //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
@@ -423,12 +415,6 @@ class chartX {
         var yAxisMin = d3.min(yAll) - (this.CHART_Y_AXIS_MARGIN_PERC_BOTTOM  * (d3.max(yAll) - d3.min(yAll)));
         var yAxisMax = d3.max(yAll) + (this.CHART_Y_AXIS_MARGIN_PERC_TOP     * (d3.max(yAll) - d3.min(yAll)));
 
-        // Single value for all Y points
-        if(d3.min(yAll) == d3.max(yAll)) {
-            yAxisMin = d3.min(yAll) - (this.CHART_Y_AXIS_SINGLE_VALUE_PERC_BOTH) * (d3.min(yAll));
-            yAxisMax = d3.max(yAll) + (this.CHART_Y_AXIS_SINGLE_VALUE_PERC_BOTH) * (d3.max(yAll));
-        }
-
         var yp = d3.scaleLinear()
             .domain([yAxisMin, yAxisMax])
             .range([height, 0]);
@@ -483,13 +469,6 @@ class chartX {
         })
         var yAxisMin = d3.min(yAll) - (this.CHART_Y_AXIS_MARGIN_PERC_BOTTOM  * (d3.max(yAll) - d3.min(yAll)));
         var yAxisMax = d3.max(yAll) + (this.CHART_Y_AXIS_MARGIN_PERC_TOP     * (d3.max(yAll) - d3.min(yAll)));
-
-        // Single value for all Y points
-        if(d3.min(yAll) == d3.max(yAll)) {
-            yAxisMin = d3.min(yAll) - (this.CHART_Y_AXIS_SINGLE_VALUE_PERC_BOTH) * (d3.min(yAll));
-            yAxisMax = d3.max(yAll) + (this.CHART_Y_AXIS_SINGLE_VALUE_PERC_BOTH) * (d3.max(yAll));
-        }
-
         var ys = d3.scaleLinear()
             .domain([yAxisMin, yAxisMax])
             .range([height, 0]);
