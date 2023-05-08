@@ -3,7 +3,8 @@
 //       Mahdi Khansari
 //       Enhanced D3 line chart
 //       May 1, 2023
-//       v1.4.2
+//       v1.4.1
+
 // ============================================================================================================== //
 class chartX {
     constructor(_container, _data){
@@ -220,15 +221,6 @@ class chartX {
     drawChart(){
 
         var _id = this.countainer;
-
-        // Chart width and height
-        var width = document.getElementById(_id).offsetWidth - this.chartMargin.left - this.chartMargin.right;
-        var height = document.getElementById(_id).offsetHeight - this.chartMargin.top - this.chartMargin.bottom - 60;
-
-        // Initial Check
-        // If the widht or height is less than zero it would exit the process
-        if(width < 0 || height < 0) return null;
-
         var _ChartJson = this.data;
         this.legend = [];
         var _this = this;
@@ -270,6 +262,10 @@ class chartX {
         //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//
         // Chart -> Datum
         var chartDatum = this.chartJson2Datum(_ChartJson);
+
+        // Chart width and height
+        var width = document.getElementById(_id).offsetWidth - this.chartMargin.left - this.chartMargin.right;
+        var height = document.getElementById(_id).offsetHeight - this.chartMargin.top - this.chartMargin.bottom - 60;
 
 
         //— — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — —//

@@ -103,7 +103,7 @@
     <!-- SCRIPTS -->
     
     <script src="https://d3js.org/d3.v4.js"></script>
-    <script src="ChartX.1.4.0.js"></script>
+    <script src="ChartX.1.4.1.js"></script>
     <script src="JSON_Sample.js"></script>
 
     <body>
@@ -113,14 +113,14 @@
     </body>
 </html>
 <script>
-    var myChart1 = new chartX("my_chart1", json_data_with_NaN_2)
+    var myChart1 = new chartX("my_chart1", json_data_single_value)
 
 
     
 
 
     // format the data
-    myChart1.JSONArray2ChartJSON(json_data_with_NaN_2,'__time',['vonr_access']);
+    myChart1.JSONArray2ChartJSON(json_data_single_value,'__time',['vonr_access']);
 
     myChart1.set_ySecondaryAxis(0,false);
     myChart1.set_yColor(0,"blue");

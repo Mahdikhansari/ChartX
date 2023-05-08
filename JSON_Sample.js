@@ -836,3 +836,42 @@ json_data_with_NaN_2 =[
         "vonr_access": "NaN"
     }
 ];
+
+json_data_single_value =[
+    {
+        "__time": "2023-03-27T00:00:00.000Z",
+        "cell": "SDLAS00031B_3_n71_F-G",
+        "vonr_access": 100
+    },
+    {
+        "__time": "2023-03-27T01:00:00.000Z",
+        "cell": "SDLAS00031B_3_n71_F-G",
+        "vonr_access": 100
+    },
+    {
+        "__time": "2023-03-27T02:00:00.000Z",
+        "cell": "SDLAS00031B_3_n71_F-G",
+        "vonr_access": 100
+    },
+    {
+        "__time": "2023-03-27T03:00:00.000Z",
+        "cell": "SDLAS00031B_3_n71_F-G",
+        "vonr_access": 100
+    },
+    {
+        "__time": "2023-03-27T04:00:00.000Z",
+        "cell": "SDLAS00031B_3_n71_F-G",
+        "vonr_access": 100
+    },
+    {
+        "__time": "2023-03-27T05:00:00.000Z",
+        "cell": "SDLAS00031B_3_n71_F-G",
+        "vonr_access": 100
+    },
+    {
+        "__time": "2023-03-27T06:00:00.000Z",
+        "cell": "SDLAS00031B_3_n71_F-G",
+        "vonr_access": 100
+    }
+];
+
